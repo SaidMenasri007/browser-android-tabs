@@ -4777,6 +4777,21 @@ content creators you love.
 
       <message name="IDS_PHOTO_BY" desc="TExt for image credit for background images on NTP">Photo by <ph name="PHOTO_BY">%1$s</ph></message>
 
+      <message name="IDS_READSHARE_FORWARD" desc="Read Later in Private">
+              Read Later in Private
+      </message>
+      <message name="IDS_FAVICON" desc="favicon">
+              favicon
+      </message>
+      <message name="IDS_MENU_READINGLIST" desc="Menu item for opening the reading list page. [CHAR-LIMIT=27]">
+              Reading List
+      </message>
+      <message name="IDS_READLIST_TITLE" desc="title">
+              title
+      </message>
+      <message name="IDS_READLIST_URL" desc="url">
+              url
+            </message>
     </messages>
   </release>
 </grit>

@@ -154,6 +154,7 @@ import org.chromium.chrome.browser.tasks.tab_management.TabManagementModuleProvi
 import org.chromium.chrome.browser.toolbar.ToolbarButtonInProductHelpController;
 import org.chromium.chrome.browser.toolbar.top.ToolbarControlContainer;
 import org.chromium.chrome.browser.ui.RootUiCoordinator;
+import org.chromium.chrome.browser.readlist.RListActivity;
 import org.chromium.chrome.browser.usage_stats.UsageStatsService;
 import org.chromium.chrome.browser.toolbar.top.ToolbarLayout;
 import org.chromium.chrome.browser.util.AccessibilityUtil;
@@ -2076,7 +2077,11 @@ public class ChromeTabbedActivity extends ChromeActivity implements ScreenshotMo
                 NewTabPageUma.recordAction(NewTabPageUma.ACTION_OPENED_DOWNLOADS_MANAGER);
             }
             RecordUserAction.record("MobileMenuDownloadManager");
-        } else if (id == R.id.open_recently_closed_tab) {
+        } else if ( id == R.id.readinglist_menu_id){
+            Intent intent = new Intent(this, RListActivity.class);
+            startActivity(intent);
+        }
+        else if (id == R.id.open_recently_closed_tab) {
             TabModel currentModel = mTabModelSelectorImpl.getCurrentModel();
             if (!currentModel.isIncognito()) currentModel.openMostRecentlyClosedTab();
             RecordUserAction.record("MobileTabClosedUndoShortCut");
