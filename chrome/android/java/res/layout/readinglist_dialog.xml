@@ -1,62 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/readshare_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <TextView
-        android:id="@+id/btn_readshare_close"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="10pt"
-        android:padding="10dp"
-        android:textColor="#FF0E73CF"
-        android:text="@string/close" />
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="12dp"
+    android:paddingTop="15dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="5dp">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:padding="5dp">
-        <TextView
-            android:id="@+id/btn_readshare_content"
-            android:layout_width="0dp"
-            android:layout_weight="0.7"
-            android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iv_readshare_logo"
             android:layout_width="0dp"
-            android:layout_weight="0.3"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:contentDescription="@string/favicon"
-            />
-    </LinearLayout>
-
-
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
+            android:layout_weight="0.1"
+            android:contentDescription="content"
+            android:src="@drawable/ic_local_florist_black_24dp" />
 
         <TextView
-            android:id="@+id/tv_readshare_forward"
+            android:id="@+id/readshare_title"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="0.9"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="10dp"
-            android:textSize="10pt"
-            android:textColor="#FF2225A0"
-            android:drawableEnd="@drawable/forward_icon"
-            android:text="@string/readshare_forward"
-            />
-
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="This is the title of the website and it ellipsize at end"
+            android:textColor="#292929"
+            android:textSize="18dp" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/btn_readshare_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
+        android:text="url" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/btn_readshare_save"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textAllCaps="true"
+            android:text="save &amp; close"
+            android:textColor="#FF0E73CF"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/btn_readshare_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textAllCaps="true"
+            android:text="exit"
+            android:layout_marginLeft="15dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+
+            android:textColor="#b71c1c"
+            android:textSize="18dp" />
+    </LinearLayout>
 </LinearLayout>

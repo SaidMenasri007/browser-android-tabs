@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
 
@@ -32,6 +34,7 @@ public class AddReadingList extends Activity {
 
     TextView BtnClose, ReadContent, ReadForward;
     ImageView Forward, ReadLogo;
+    TextView titleTextView;
 
     String sharedText = "";
 
@@ -40,8 +43,8 @@ public class AddReadingList extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.readinglist_dialog);
-
-        BtnClose = (TextView) findViewById(R.id.btn_readshare_close);
+        titleTextView = (TextView) findViewById(R.id.readshare_title);
+        BtnClose = (TextView) findViewById(R.id.btn_readshare_exit);
         BtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,21 +73,15 @@ public class AddReadingList extends Activity {
                 @Override
                 public void run() {
                     try {
-                        InputStream is = (InputStream)new URL(sharedText).openStream();
+                        InputStream is = (InputStream) new URL(sharedText).openStream();
                         Scanner scanner = new Scanner(is);
                         String responseBody = scanner.useDelimiter("\\A").next();
                         value[0] = responseBody.substring(responseBody.indexOf("<title>") + 7, responseBody.indexOf("</title>"));
-
-                        /*Document doc = Jsoup.connect(sharedText).get();
-                        value[0] = doc.title();
-                        Element element = doc.head().select("link[href~=.*\\.(ico|png)]").first();
-                        if(isValidURL(element.attr("href")) ){
-                            value[1] = element.attr("href");
-                        } else {
-                            if(element.attr("href").isEmpty() || !element.attr("href").equals("")){
-                                value[1] = sharedText + element.attr("href");
-                            }
-                        }*/
+                        Pattern pattern = Pattern.compile("<link .*? href=\"(.*?.ico)\"");
+                        Matcher matcher = pattern.matcher(responseBody);
+                        if (matcher.find()) {
+                            value[1] = matcher.group(1);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -98,7 +95,7 @@ public class AddReadingList extends Activity {
 
         displayText(sharedText, value[0], value[1]);
 
-        ReadForward = (TextView) findViewById(R.id.tv_readshare_forward);
+        ReadForward = (TextView) findViewById(R.id.btn_readshare_save);
         ReadForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,8 +109,8 @@ public class AddReadingList extends Activity {
         final String lg_url = logo_url;
 
         if (url != null) {
-            ReadContent.setText(title);
-            ReadContent.append("\n");
+            titleTextView.setText(title);
+
             ReadContent.append(url);
 
             //Picasso.get().load(lg_url).into(ReadLogo);

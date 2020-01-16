@@ -22,7 +22,7 @@ public class RListHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE READLIST (_id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, description TEXT, logo_url TEXT, created LONG)";
+        String sql = "CREATE TABLE IF NOT EXISTS READLIST (_id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, description TEXT, logo_url TEXT, created LONG)";
         db.execSQL(sql);
 
         //insert sample
@@ -45,5 +45,13 @@ public class RListHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public void deleteRow(int id, SQLiteDatabase db) {
+        db.delete("READLIST", "_id=?", new String[]{String.valueOf(id)});
+    }
+
+    public void deleteAll(SQLiteDatabase db){
+        db.delete("READLIST", null, null);
     }
 }

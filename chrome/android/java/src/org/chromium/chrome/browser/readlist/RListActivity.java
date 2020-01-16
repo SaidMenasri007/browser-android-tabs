@@ -1,29 +1,29 @@
 package org.chromium.chrome.browser.readlist;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.provider.Browser;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import org.chromium.chrome.browser.IntentHandler;
-import org.chromium.chrome.browser.ChromeActivity;
-import org.chromium.chrome.browser.tabmodel.TabCreatorManager.TabCreator;
-import org.chromium.chrome.browser.tabmodel.TabLaunchType;
-import org.chromium.content_public.browser.LoadUrlParams;
-import org.chromium.ui.base.PageTransition;
-
-
-import java.util.ArrayList;
+import android.widget.TextView;
 
 import org.chromium.base.VisibleForTesting;
+import org.chromium.chrome.R;
+import org.chromium.chrome.browser.ChromeTabbedActivity;
 import org.chromium.chrome.browser.IntentHandler;
 import org.chromium.chrome.browser.SnackbarActivity;
+import org.chromium.chrome.browser.document.ChromeLauncherActivity;
 import org.chromium.chrome.browser.util.IntentUtils;
-import org.chromium.chrome.R;
+import org.chromium.ui.base.DeviceFormFactor;
+import org.chromium.ui.base.PageTransition;
+
+import java.util.ArrayList;
 
 public class RListActivity extends SnackbarActivity {
 
@@ -34,48 +34,76 @@ public class RListActivity extends SnackbarActivity {
     ListView ReadingListView;
     private static ReadingListAdapter adapter;
     Activity tempActivity;
+    SQLiteDatabase db;
+    RListHelper rListHelper;
+    TextView clearReadingList;
+    ImageView closeReadingList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.readinglist_main);
 
         ReadingListView = (ListView) findViewById(R.id.lv_rlist);
+        clearReadingList = (TextView) findViewById(R.id.clear_reading_list);
+        closeReadingList = (ImageView) findViewById(R.id.close_reading_list);
         tempActivity = RListActivity.this;
-        RListHelper rListHelper = new RListHelper(this);
-        SQLiteDatabase db = rListHelper.getReadableDatabase();
+        rListHelper = new RListHelper(this);
+        db = rListHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT url, description, logo_url, created FROM READLIST", new String[]{});
+        Cursor cursor = db.rawQuery("SELECT _id, url, description, logo_url, created FROM READLIST", new String[]{});
 
-        if(cursor != null) {
+        if (cursor != null) {
             cursor.moveToFirst();
         }
 
         dataModel = new ArrayList<>();
 
         do {
-            String url = cursor.getString(0);
-            String title = cursor.getString(1);
-            String logo_url = cursor.getString(2);
-
-            dataModel.add(new ReadingListModel(url, title, logo_url));
+            int id = Integer.parseInt(cursor.getString(0));
+            String url = cursor.getString(1);
+            String title = cursor.getString(2);
+            String logo_url = cursor.getString(3);
+            dataModel.add(new ReadingListModel(id, url, title, logo_url));
 
 
         } while (cursor.moveToNext());
 
-        adapter = new ReadingListAdapter(dataModel, getApplicationContext(), new ReadListListener(){
+        closeReadingList.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(ReadingListModel readingListModel){
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        adapter = new ReadingListAdapter(dataModel, getApplicationContext(), new ReadListListener() {
+            @Override
+            public void onItemClick(ReadingListModel readingListModel) {
                 //todo
                 openUrl(readingListModel.url, false, true);
             }
 
             @Override
-            public void onRemoveClick(int position, ReadingListModel readingListModel){
+            public void onRemoveClick(ReadingListModel readingListModel) {
                 //todo
+                rListHelper.deleteRow(readingListModel.getId(), db);
+                notifyItemRemoval();
             }
+
         });
         ReadingListView.setAdapter(adapter);
+        clearReadingList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rListHelper.deleteAll(db);
+                adapter.setList(new ArrayList<ReadingListModel>());
+                notifyItemRemoval();
+            }
+        });
 
+    }
+
+    public void notifyItemRemoval() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -84,19 +112,39 @@ public class RListActivity extends SnackbarActivity {
     }
 
     public void openUrl(String url, Boolean isIncognito, boolean createNewTab) {
-        if (isDisplayedInSeparateActivity()) {
-            IntentHandler.startActivityForTrustedIntent(
-                    getOpenUrlIntent(url, isIncognito, createNewTab));
-            return;
-        }
-        ChromeActivity activity = (ChromeActivity) tempActivity;
-        if (createNewTab) {
-            TabCreator tabCreator = (isIncognito == null) ? activity.getCurrentTabCreator()
-                    : activity.getTabCreator(isIncognito);
-            tabCreator.createNewTab(new LoadUrlParams(url, PAGE_TRANSITION_TYPE),
-                    TabLaunchType.FROM_LINK, activity.getActivityTab());
+        IntentHandler.startActivityForTrustedIntent(getOpenUrlIntent(url, isIncognito, createNewTab));
+
+    }
+
+    @VisibleForTesting
+    Intent getOpenUrlIntent(String url, Boolean isIncognito, boolean createNewTab) {
+        // Construct basic intent.
+        Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        viewIntent.putExtra(Browser.EXTRA_APPLICATION_ID,
+                this.getApplicationContext().getPackageName());
+        viewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Determine component or class name.
+        ComponentName component;
+        if (DeviceFormFactor.isNonMultiDisplayContextOnTablet(this)) {
+            component = this.getComponentName();
         } else {
-            activity.getActivityTab().loadUrl(new LoadUrlParams(url, PAGE_TRANSITION_TYPE));
+            component = IntentUtils.safeGetParcelableExtra(
+                    this.getIntent(), IntentHandler.EXTRA_PARENT_COMPONENT);
         }
+        if (component != null) {
+            ChromeTabbedActivity.setNonAliasedComponent(viewIntent, component);
+        } else {
+            viewIntent.setClass(this, ChromeLauncherActivity.class);
+        }
+
+        // Set other intent extras.
+        if (isIncognito != null) {
+            viewIntent.putExtra(IntentHandler.EXTRA_OPEN_NEW_INCOGNITO_TAB, isIncognito);
+        }
+        if (createNewTab) viewIntent.putExtra(Browser.EXTRA_CREATE_NEW_TAB, true);
+
+        viewIntent.putExtra(IntentHandler.EXTRA_PAGE_TRANSITION_TYPE, PAGE_TRANSITION_TYPE);
+        return viewIntent;
     }
 }
