@@ -28,11 +28,6 @@ public class ReadingListAdapter extends ArrayAdapter<ReadingListModel> {
         this.readListListener = readListListener;
     }
 
-    public void setList(ArrayList<ReadingListModel> readingListModelArrayList) {
-        this.dataSet = readingListModelArrayList;
-        notifyDataSetChanged();
-    }
-
     private int lastPosition = -1;
 
     @Override

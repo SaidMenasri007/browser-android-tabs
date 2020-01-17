@@ -98,7 +98,8 @@ public class RListActivity extends SnackbarActivity {
             public void onClick(View view) {
                 System.out.println("We are clearing all data");
                 rListHelper.deleteAll(db);
-                adapter.setList(new ArrayList<ReadingListModel>());
+                dataModel.clear();
+                notifyItemRemoval();
             }
         });
 
