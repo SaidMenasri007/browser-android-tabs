@@ -52,22 +52,24 @@ public class RListActivity extends SnackbarActivity {
         db = rListHelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery("SELECT _id, url, description, logo_url, created FROM READLIST", new String[]{});
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-
         dataModel = new ArrayList<>();
 
-        do {
-            int id = Integer.parseInt(cursor.getString(0));
-            String url = cursor.getString(1);
-            String title = cursor.getString(2);
-            String logo_url = cursor.getString(3);
-            dataModel.add(new ReadingListModel(id, url, title, logo_url));
+        if (cursor != null && cursor.moveToFirst()) {
+
+            do {
+                int id = Integer.parseInt(cursor.getString(0));
+                String url = cursor.getString(1);
+                String title = cursor.getString(2);
+                String logo_url = cursor.getString(3);
+                dataModel.add(new ReadingListModel(id, url, title, logo_url));
 
 
-        } while (cursor.moveToNext());
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+
+
 
         closeReadingList.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,9 +96,9 @@ public class RListActivity extends SnackbarActivity {
         clearReadingList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("We are clearing all data");
                 rListHelper.deleteAll(db);
                 adapter.setList(new ArrayList<ReadingListModel>());
-                notifyItemRemoval();
             }
         });
 

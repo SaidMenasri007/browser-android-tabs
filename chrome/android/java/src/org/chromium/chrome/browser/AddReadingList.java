@@ -52,7 +52,7 @@ public class AddReadingList extends Activity {
             }
         });
 
-        ReadContent = (TextView) findViewById(R.id.btn_readshare_content);
+        ReadContent = (TextView) findViewById(R.id.readshare_content);
         ReadLogo = (ImageView) findViewById(R.id.iv_readshare_logo);
 
         Intent intent = getIntent();
@@ -111,12 +111,11 @@ public class AddReadingList extends Activity {
         if (url != null) {
             titleTextView.setText(title);
 
-            ReadContent.append(url);
+            ReadContent.setText(url);
 
             //Picasso.get().load(lg_url).into(ReadLogo);
 
             new Thread(new Runnable() {
-                String abc = "";
 
                 @Override
                 public void run() {
