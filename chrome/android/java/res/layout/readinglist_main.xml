@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#292929"
+    android:background="@color/modern_primary_color"
     android:paddingStart="15dp"
     android:paddingEnd="15dp"
     android:paddingTop="20dp"
@@ -18,12 +18,13 @@
             android:layout_height="wrap_content"
             android:text="Reading List"
             android:textSize="18dp"
-            android:textColor="@android:color/white"/>
+            android:textColor="?android:attr/textColorPrimary"/>
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
-        ​
+            android:layout_weight="1"
+            android:background="?android:attr/textColorPrimary"
+            />        ​
         <ImageView
             android:id="@+id/close_reading_list"
             android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
             android:layout_gravity="center"
             android:contentDescription="hello"
             android:src="@drawable/btn_delete_24dp"
-            android:tint="#ffffff"/>
+            android:tint="?android:attr/textColorPrimary"/>
     </LinearLayout>
     ​
     <TextView
@@ -46,7 +47,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/white"
+        android:background="?android:attr/textColorPrimary"
         android:alpha="0.2"/>
     <ListView
         android:id="@+id/lv_rlist"

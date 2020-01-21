@@ -51,7 +51,7 @@ public class RListActivity extends SnackbarActivity {
         rListHelper = new RListHelper(this);
         db = rListHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT _id, url, description, logo_url, created FROM READLIST", new String[]{});
+        Cursor cursor = db.rawQuery("SELECT _id, url, description, logo_url, created FROM READLIST ORDER BY _id DESC", new String[]{});
         dataModel = new ArrayList<>();
 
         if (cursor != null && cursor.moveToFirst()) {

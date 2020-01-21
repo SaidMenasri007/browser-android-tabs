@@ -8,14 +8,14 @@
         android:id="@+id/content"
         style="@style/ListItemContainer" >
 
-        <include layout="@layout/modern_list_item_view" />
+        <include layout="@layout/modern_read_list_item_view" />
 
         <org.chromium.ui.widget.ChromeImageButton
             android:id="@+id/remove"
             style="@style/ListItemEndIconSmall"
             android:contentDescription="@string/remove"
             android:src="@drawable/btn_delete_24dp"
-            app:tint="@color/default_icon_color_secondary" />
+            app:tint="?android:attr/textColorPrimary" />
     </LinearLayout>
 
 </LinearLayout>
