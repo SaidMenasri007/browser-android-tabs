@@ -15,7 +15,7 @@
             style="@style/ListItemEndIconSmall"
             android:contentDescription="@string/remove"
             android:src="@drawable/btn_delete_24dp"
-            app:tint="?android:attr/textColorPrimary" />
+            app:tint="#000" />
     </LinearLayout>
 
 </LinearLayout>
